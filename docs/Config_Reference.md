@@ -54,9 +54,11 @@ serial:
 #   method needed for some Fysetc Cheetah boards. The 'rpi_usb' method
 #   is useful on Raspberry Pi boards with micro-controllers powered
 #   over USB - it briefly disables power to all USB ports to
-#   accomplish a micro-controller reset. The 'command' method involves
-#   sending a Klipper command to the micro-controller so that it can
-#   reset itself. The default is 'arduino' if the micro-controller
+#   accomplish a micro-controller reset. The 'mightyboard' method
+#   is useful on mightyboard rev g and h - it changes the baud rate
+#   to 57600 which resets the micro-controller. The 'command' method
+#   involves sending a Klipper command to the micro-controller so that
+#   it can reset itself. The default is 'arduino' if the micro-controller
 #   communicates over a serial port, 'command' otherwise.
 ```
 
@@ -2294,6 +2296,34 @@ section.
 #   least two measurements must be provided.
 ```
 
+### [ads1118]
+
+ADS1118 serial peripheral interface (SPI) temperature based
+ADCs with thermocouples.  This module provides two pins
+that correspond to MUX configurations (pin_0 reads AIN0 and AIN1
+differentially and pin_1 reads AIN2 and AIN3 differentially).
+These pins can be utilized by thermocouples (e.g.
+[ads1118_typek](#ADS1118-with-thermocouple-temperature-sensors)).
+Cold junction temperatures are sampled automatically and
+compensation is applied. Be sure to place the sensor section in
+the config file above its first use in a heater section.
+
+```
+[ads1118]
+sensor_pin:
+#   The chip select line for the sensor chip. This parameter must be
+#   provided.
+#spi_speed: 4000000
+#   The SPI speed (in hz) to use when communicating with the chip.
+#   The default is 4000000.
+#spi_bus:
+#spi_software_sclk_pin:
+#spi_software_mosi_pin:
+#spi_software_miso_pin:
+#   See the "common SPI settings" section for a description of the
+#   above parameters.
+```
+
 ### [heater_generic]
 
 Generic heaters (one may define any number of sections with a
@@ -2438,6 +2468,22 @@ sensor_pin:
 #   The above parameters control the sensor parameters of MAX31865
 #   chips. The defaults for each parameter are next to the parameter
 #   name in the above list.
+```
+### ADS1118 with thermocouple temperature sensors
+
+ADS1118 serial peripheral interface (SPI) ADCs with one or two
+type K thermocouples.  The following parameters are available in
+heater sections that use this sensor.  Cold junction
+temperature compensation is automatically provided by the
+[ads1118](#ads1118) module.
+
+```
+sensor_type: ads1118_typek
+sensor_pin:
+#   Hareware mux channel the thermocopule is connected to.  The
+#   "[ads1118]" module creates two pins (ads1118:pin_0 and
+#   ads1118:pin_1). pin_0 reads thermocouples connected to AIN0 and
+#   AIN1.  pin_1 reads thermocouples connected to AIN2 and AIN3.
 ```
 
 ### BMP180/BMP280/BME280/BME680 temperature sensor
@@ -2896,6 +2942,7 @@ the [command reference](G-Codes.md#led) for more information.
 #initial_GREEN: 0.0
 #initial_BLUE: 0.0
 #initial_WHITE: 0.0
+#initial_BLINK: 0.0
 #   Sets the initial LED color. Each value should be between 0.0 and
 #   1.0. The default for each color is 0.
 ```
@@ -3006,6 +3053,7 @@ PCA9632 LED support. The PCA9632 is used on the FlashForge Dreamer.
 #initial_GREEN: 0.0
 #initial_BLUE: 0.0
 #initial_WHITE: 0.0
+#initial_BLINK: 0.0
 #   See the "led" section for information on these parameters.
 ```
 
@@ -3900,25 +3948,49 @@ lcd_type:
 #   parameter must be provided when using menu. The presence of an
 #   'analog_range_click_pin' config parameter turns this parameter
 #   from digital to analog.
+#   For Replicator 2/2X:
+#   A comma separated list of pins connected to the 'enter' button or
+#   encoder 'click'. This parameter must be provided when using menu.
+#   The presence of an 'analog_range_click_pin' config parameter turns
+#   this parameter from digital to analog.
 #back_pin:
 #   The pin connected to 'back' button. This parameter is optional,
 #   menu can be used without it. The presence of an
 #   'analog_range_back_pin' config parameter turns this parameter from
 #   digital to analog.
+#   For Replicator 2/2X:
+#   A comma separated list of pins connected to the 'back' button. This
+#   parameter is optional, menu can be used without it. The presence
+#   of an 'analog_range_back_pin' config parameter turns this
+#   parameter from digital to analog.
 #up_pin:
 #   The pin connected to 'up' button. This parameter must be provided
 #   when using menu without encoder. The presence of an
 #   'analog_range_up_pin' config parameter turns this parameter from
 #   digital to analog.
+#   For Replicator 2/2X:
+#   A comma separated list of pins connected to the 'up' button. This
+#   parameter must be provided when using menu without encoder. The
+#   presence of an 'analog_range_up_pin' config parameter turns this
+#   parameter from digital to analog.
 #down_pin:
 #   The pin connected to 'down' button. This parameter must be
 #   provided when using menu without encoder. The presence of an
 #   'analog_range_down_pin' config parameter turns this parameter from
 #   digital to analog.
+#   For Replicator 2/2X:
+#   A comma separated list of pins connected to the 'down' button. This
+#   parameter must be provided when using menu without encoder. The
+#   presence of an 'analog_range_down_pin' config parameter turns this
+#   parameter from digital to analog.
 #kill_pin:
 #   The pin connected to 'kill' button. This button will call
 #   emergency stop. The presence of an 'analog_range_kill_pin' config
 #   parameter turns this parameter from digital to analog.
+#   For Replicator 2/2X:
+#   A comma separated list of pins connected to 'kill' button. This button
+#   will call emergency stop. The presence of an 'analog_range_kill_pin'
+#   config parameter turns this parameter from digital to analog.
 #analog_pullup_resistor: 4700
 #   The resistance (in ohms) of the pullup attached to the analog
 #   button. The default is 4700 ohms.
@@ -3986,6 +4058,11 @@ spi_software_sclk_pin:
 spi_software_mosi_pin:
 spi_software_miso_pin:
 #   The pins connected to the shift register controlling the display.
+#   For Replicator 2/2X:
+#   The spi_software_miso_pin is not used and can be left out of
+#   the spi configuration.  However, for backwards compatibility,
+#   this pin can be set to an unused pin of the printer mainboard.
+#   For all others:
 #   The spi_software_miso_pin needs to be set to an unused pin of the
 #   printer mainboard as the shift register does not have a MISO pin,
 #   but the software spi implementation requires this pin to be

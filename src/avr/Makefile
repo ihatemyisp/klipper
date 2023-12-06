@@ -1,5 +1,13 @@
 # Additional avr build rules
 
+#        *Note*
+#        For now, just commenting out to get v0.12 compiling.
+#
+#        !Warning!
+#        This build will only work on a Replicator 2 and 2X.
+#
+FLASH_DEVICE=/dev/serial/by-id/usb-MakerBot_Industries_The_Replicator_A413936383135181D010-if00
+
 # Use the avr toolchain
 CROSS_PREFIX=avr-
 
@@ -31,4 +39,6 @@ $(OUT)klipper.elf.hex: $(OUT)klipper.elf
 flash: $(OUT)klipper.elf.hex
 	@echo "  Flashing $< to $(FLASH_DEVICE) via avrdude"
 	$(Q)if [ -z $(FLASH_DEVICE) ]; then echo "Please specify FLASH_DEVICE"; exit 1; fi
-	$(Q)avrdude -p$(CONFIG_MCU) -c$(CONFIG_AVRDUDE_PROTOCOL) -P"$(FLASH_DEVICE)" -D -U"flash:w:$(<):i"
+# See note and warning above
+#	$(Q)avrdude -p$(CONFIG_MCU) -c$(CONFIG_AVRDUDE_PROTOCOL) -P"$(FLASH_DEVICE)" -D -U"flash:w:$(<):i"
+	$(Q)avrdude -p$(CONFIG_MCU) -c stk500v1 -P"$(FLASH_DEVICE)" -D -U"flash:w:$(<):i" -v -b 57600

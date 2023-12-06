@@ -22,7 +22,14 @@ class hd44780_spi:
                                                        True)
         # spi config
         self.spi = bus.MCU_SPI_from_config(
-            config, 0x00, pin_option="latch_pin")
+#        *Note*
+#        For now, just commenting out to get v0.12 compiling.
+#
+#        !Warning!
+#        This build will only work on a Replicator 2 and 2X.
+#
+#            config, 0x00, pin_option="latch_pin")
+            config, 0x00, pin_option="latch_pin", has_soft_miso=False)
         self.mcu = self.spi.get_mcu()
         #self.spi.spi_send([0x01,0xa0])
         self.data_mask = (1<<1)
