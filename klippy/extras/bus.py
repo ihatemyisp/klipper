@@ -106,7 +106,15 @@ class MCU_SPI:
 # Helper to setup an spi bus from settings in a config section
 def MCU_SPI_from_config(config, mode, pin_option="cs_pin",
                         default_speed=100000, share_type=None,
-                        cs_active_high=False):
+#        *Note*
+#        For now, just commenting out to get v0.12 compiling.
+#
+#        !Warning!
+#        This build will only work on a Replicator 2 and 2X.
+#                        
+#                        cs_active_high=False):
+                        cs_active_high=False, has_soft_mosi=True,
+                        has_soft_miso=True):
     # Determine pin from config
     ppins = config.get_printer().lookup_object("pins")
     cs_pin = config.get(pin_option)
@@ -119,11 +127,7 @@ def MCU_SPI_from_config(config, mode, pin_option="cs_pin",
     mcu = cs_pin_params['chip']
     speed = config.getint('spi_speed', default_speed, minval=100000)
     if config.get('spi_software_sclk_pin', None) is not None:
-#        *Note*
-#        For now, just commenting out to get v0.12 compiling.
-#
-#        !Warning!
-#        This build will only work on a Replicator 2 and 2X.
+#        See note above
 #
 #        sw_pin_names = ['spi_software_%s_pin' % (name,)
 #                        for name in ['miso', 'mosi', 'sclk']]
