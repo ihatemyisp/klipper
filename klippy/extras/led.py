@@ -11,7 +11,14 @@ RENDER_TIME = 0.500
 
 # Helper code for common LED initialization and control
 class LEDHelper:
-    def __init__(self, config, update_func, led_count=1):
+#        *Note*
+#        For now, just commenting out to get v0.12 compiling.
+#
+#        !Warning!
+#        This build will only work on a Replicator 2 and 2X.
+#
+#    def __init__(self, config, update_func, led_count=1):
+    def __init__(self, config, update_func, led_count=1, has_blink=False):
         self.printer = config.get_printer()
         self.update_func = update_func
         self.led_count = led_count
@@ -21,12 +28,7 @@ class LEDHelper:
         green = config.getfloat('initial_GREEN', 0., minval=0., maxval=1.)
         blue = config.getfloat('initial_BLUE', 0., minval=0., maxval=1.)
         white = config.getfloat('initial_WHITE', 0., minval=0., maxval=1.)
-#        *Note*
-#        For now, just commenting out to get v0.12 compiling.
-#
-#        !Warning!
-#        This build will only work on a Replicator 2 and 2X.
-#
+#        See note above
 #        self.led_state = [(red, green, blue, white)] * led_count
         blink = config.getfloat('initial_BLINK', 0., minval=0., maxval=1.)
         color = (red, green, blue, white, blink)
