@@ -23,6 +23,7 @@ class LEDHelper:
         self.update_func = update_func
         self.led_count = led_count
         self.need_transmit = False
+        self.has_blink = has_blink
         # Initial color
         red = config.getfloat('initial_RED', 0., minval=0., maxval=1.)
         green = config.getfloat('initial_GREEN', 0., minval=0., maxval=1.)
